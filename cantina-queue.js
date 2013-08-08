@@ -32,9 +32,13 @@ app.loadQueueWorkers = function (dir, cwd) {
   Object.keys(workers).forEach(function (name) {
     var worker = workers[name]
       , queue = worker.queue || name
-      , handler = worker.worker || worker;
+      , handler = worker.worker || worker
+      , count = worker.count || 1
+      , i;
 
-    app.amino.process(queue, handler);
+    for (i = 0; i < count; i++) {
+      app.amino.process(queue, handler);
+    }
   });
 };
 
