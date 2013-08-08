@@ -38,8 +38,5 @@ app.loadQueueWorkers = function (dir, cwd) {
   });
 };
 
-// On app start, load workers from app root.
-app.hook('start').add(function (next) {
-  app.loadQueueWorkers('workers');
-  next();
-});
+//Load workers from app root.
+app.loadQueueWorkers('workers');
