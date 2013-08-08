@@ -23,4 +23,9 @@ describe('basic test', function () {
     app.once('noexports', done);
     app.queue('noexports', {name: 'brian'});
   });
+
+  it('can allow modules to register their own workers', function (done) {
+    app.once('manual', done);
+    app.queue('manual', {name: 'thomas'});
+  });
 });

@@ -36,6 +36,11 @@ app.loadQueueWorkers = function (dir, cwd) {
       , count = worker.count || 1
       , i;
 
+    if (typeof handler !== 'function') {
+      // The module is registering its own worker(s).
+      return;
+    }
+
     for (i = 0; i < count; i++) {
       app.amino.process(queue, handler);
     }
