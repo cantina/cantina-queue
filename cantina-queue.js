@@ -26,9 +26,9 @@ app.queue = function (queue, payload) {
   app.amino.queue(queue, payload);
 };
 
-// Load workers from a directory and register queue workers for them.
-app.loadQueueWorkers = function (dir, cwd) {
-  var workers = app.load(dir, cwd);
+// Register a loader for queue workers.
+app.loader('workers', function (options) {
+  var workers = app.load('modules', options);
   Object.keys(workers).forEach(function (name) {
     var worker = workers[name]
       , queue = worker.queue || name
@@ -45,7 +45,4 @@ app.loadQueueWorkers = function (dir, cwd) {
       app.amino.process(queue, handler);
     }
   });
-};
-
-//Load workers from app root.
-app.loadQueueWorkers('workers');
+});

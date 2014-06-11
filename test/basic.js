@@ -5,7 +5,13 @@ describe('basic test', function () {
     app = require('cantina');
     app.boot(__dirname + '/testapp', function (err) {
       if (err) return done(err);
+
+      // Require cantina-queue.
       require('../');
+
+      // Load workers.
+      app.load('workers', {parent: app.root});
+
       app.start(done);
     });
   });

@@ -1,15 +1,22 @@
 {
   "name": "cantina-queue",
-  "version": "3.0.0",
+  "version": "4.0.0-dev",
+  "publishConfig": {
+    "registry": "https://npm-registry.terraeclipse.com"
+  },
   "description": "Amino queue interface for cantina applications.",
   "main": "cantina-queue.js",
   "dependencies": {
     "amino-queue": "0.0.4"
   },
+  "peerDependencies": {
+    "cantina": "~4.0.0",
+    "cantina-amino": "~4.0.0"
+  },
   "devDependencies": {
-    "mocha": "~1.12.0",
-    "cantina": "cantina/cantina#3.x",
-    "cantina-amino": "cantina/cantina-amino#3.x"
+    "mocha": "*",
+    "cantina": "~4.0.0",
+    "cantina-amino": "~4.0.0"
   },
   "scripts": {
     "test": "make test"
@@ -25,7 +32,6 @@
     "amino"
   ],
   "author": "Brian Link <cpsubrian@gmail.com>",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/cpsubrian/cantina-queue/issues"
   }
