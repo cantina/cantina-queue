@@ -27,22 +27,26 @@ app.queue = function (queue, payload) {
 };
 
 // Register a loader for queue workers.
+// Workers do not start processing until app start.
 app.loader('workers', function (options) {
-  var workers = app.load('modules', options);
-  Object.keys(workers).forEach(function (name) {
-    var worker = workers[name]
-      , queue = worker.queue || name
-      , handler = worker.worker || worker
-      , count = worker.count || 1
-      , i;
+  app.hook('start').add(function (done) {
+    var workers = app.load('modules', options);
+    Object.keys(workers).forEach(function (name) {
+      var worker = workers[name]
+        , queue = worker.queue || name
+        , handler = worker.worker || worker
+        , count = worker.count || 1
+        , i;
 
-    if (typeof handler !== 'function') {
-      // The module is registering its own worker(s).
-      return;
-    }
+      if (typeof handler !== 'function') {
+        // The module is registering its own worker(s).
+        return;
+      }
 
-    for (i = 0; i < count; i++) {
-      app.amino.process(queue, handler);
-    }
+      for (i = 0; i < count; i++) {
+        app.amino.process(queue, handler);
+      }
+    });
+    process.nextTick(done);
   });
 });
