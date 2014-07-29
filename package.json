@@ -1,6 +1,6 @@
 {
   "name": "cantina-queue",
-  "version": "4.0.0-dev2",
+  "version": "4.1.0",
   "publishConfig": {
     "registry": "https://npm-registry.terraeclipse.com"
   },
