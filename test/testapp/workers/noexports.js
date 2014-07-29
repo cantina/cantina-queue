@@ -1,6 +1,7 @@
-var app = require('cantina');
-module.exports = function (payload, cb) {
-  assert.equal(payload.name, 'brian');
-  app.emit('noexports');
-  cb();
+module.exports = function (app) {
+  return function noexports (payload, cb) {
+    assert.equal(payload.name, 'brian');
+    app.emit('noexports');
+    cb();
+  };
 };

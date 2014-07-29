@@ -2,12 +2,12 @@ describe('basic test', function () {
   var app;
 
   before(function (done) {
-    app = require('cantina');
+    app = require('cantina').createApp();
     app.boot(__dirname + '/testapp', function (err) {
       if (err) return done(err);
 
       // Require cantina-queue.
-      require('../');
+      app.require('../');
 
       // Load workers.
       app.load('workers', {parent: app.root});
