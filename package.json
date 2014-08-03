@@ -1,9 +1,6 @@
 {
   "name": "cantina-queue",
   "version": "4.1.0",
-  "publishConfig": {
-    "registry": "https://npm-registry.terraeclipse.com"
-  },
   "description": "Amino queue interface for cantina applications.",
   "main": "cantina-queue.js",
   "dependencies": {
@@ -25,6 +22,12 @@
     "type": "git",
     "url": "git://github.com/cpsubrian/cantina-queue.git"
   },
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  ],
   "homepage": "https://github.com/cpsubrian/cantina-queue",
   "keywords": [
     "cantina",

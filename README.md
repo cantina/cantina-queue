@@ -29,12 +29,14 @@ formats are supported. The preffered format is for the module to export its
 queue key and worker function like so:
 
 ```js
-module.exports = {
-  queue: 'queue:key',
-  worker: function (payload, cb) {
-    // Do work
-    cb();
-  }
+module.exports = function (app) {
+  return {
+    queue: 'queue:key',
+    worker: function (payload, cb) {
+      // Do work
+      cb();
+    }
+  };
 };
 ```
 
