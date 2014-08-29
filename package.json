@@ -7,13 +7,13 @@
     "amino-queue": "0.0.4"
   },
   "peerDependencies": {
-    "cantina": "~4.1.0",
-    "cantina-amino": "~4.1.0"
+    "cantina": "^4.1.0",
+    "cantina-amino": "^4.1.0"
   },
   "devDependencies": {
     "mocha": "*",
-    "cantina": "~4.1.0",
-    "cantina-amino": "~4.1.0"
+    "cantina": "^4.1.0",
+    "cantina-amino": "^4.1.0"
   },
   "scripts": {
     "test": "make test"
