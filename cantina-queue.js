@@ -45,12 +45,12 @@ app._queue = new Queue(conf.name, conf.options);
 
 // Queue a new job.
 app.queue = function (name, payload) {
-  app.queue._queue.add(name, payload);
+  app._queue.add(name, payload);
 };
 
 // Process a job.
 app.process = function (name, cb) {
-  app.queue._queue.process(name, function (job, done) {
+  app._queue.process(name, function (job, done) {
     cb(job.data, done);
   });
 };
