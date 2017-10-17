@@ -16,16 +16,16 @@ describe('basic test', function () {
 
   it('can run queue workers with exports', function (done) {
     app.once('withexports', done);
-    app.queue('custom', {name: 'link'});
+    app.queue.add('custom', {name: 'link'});
   });
 
   it('can run queue workers that just export the worker', function (done) {
     app.once('noexports', done);
-    app.queue('noexports', {name: 'brian'});
+    app.queue.add('noexports', {name: 'brian'});
   });
 
   it('can allow modules to register their own workers', function (done) {
     app.once('manual', done);
-    app.queue('manual', {name: 'thomas'});
+    app.queue.add('manual', {name: 'thomas'});
   });
 });

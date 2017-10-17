@@ -8,6 +8,7 @@ app.conf.add({
   queue: {
     name: 'main',
     options: {
+      skipVersionCheck: true,
       prefix: app.redisKey('queue')
     }
   }
@@ -20,6 +21,11 @@ var conf = app.conf.get('queue');
 app.queue = {
   _clients: {},
   _queue: null
+};
+
+// Shim 'String.startsWith'.
+global.String.prototype.startsWith = function (substr) {
+  return this.indexOf(substr) === 0;
 };
 
 // Create a new redis client (copy-pasted from cantina-redis).
@@ -43,7 +49,7 @@ function createRedisClient () {
 }
 
 // We need to provide our own redis client(s).
-conf.createClient = function (type) {
+conf.options.createClient = function (type) {
   if (!app.queue._clients[type]) {
     app.queue._clients[type] = createRedisClient();
   }
@@ -51,7 +57,7 @@ conf.createClient = function (type) {
 };
 
 // Create the main queue.
-app.queue._queue = new Queue(conf.name, conf);
+app.queue._queue = new Queue(conf.name, conf.options);
 
 // Queue a new job.
 app.queue.add = function (queue, payload) {
