@@ -60,6 +60,14 @@ app.queue.close = function () {
   return app.queue._queue.close();
 };
 
+// Side-compat with the amino-queue-based version.
+if (!app.amino.queue) {
+  app.amino.queue = app.queue;
+  app.amino.queue._client = {};
+  app.amino.queue._client.end = app.queue.close;
+  app.amino.process = app.queue.process;
+}
+
 // Load workers from a directory and register queue workers for them.
 app.loadQueueWorkers = function (dir, cwd) {
   var workers = app.load(dir, cwd);
@@ -79,11 +87,3 @@ app.loadQueueWorkers = function (dir, cwd) {
 
 // Load workers from app root.
 app.loadQueueWorkers('workers');
-
-// Side-compat with the amino-queue-based version.
-if (!app.amino.queue) {
-  app.amino.queue = app.queue;
-  app.amino.queue._client = {};
-  app.amino.queue._client.end = app.queue.close;
-  app.amino.process = app.queue.process;
-}
