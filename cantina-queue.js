@@ -40,32 +40,27 @@ if (redisConf) {
   }
 }
 
-// Queue a new job (also the basis for the api).
+// Create the main queue.
+app._queue = new Queue(conf.name, conf.options);
+
+// Queue a new job.
 app.queue = function (name, payload) {
   app.queue._queue.add(name, payload);
 };
 
-// Create the main queue.
-app.queue._queue = new Queue(conf.name, conf.options);
-
 // Process a job.
-app.queue.process = function (name, cb) {
+app.process = function (name, cb) {
   app.queue._queue.process(name, function (job, done) {
     cb(job.data, done);
   });
-};
-
-// Close the main queue.
-app.queue.close = function () {
-  return app.queue._queue.close();
 };
 
 // Side-compat with the amino-queue-based version.
 if (!app.amino.queue) {
   app.amino.queue = app.queue;
   app.amino.queue._client = {};
-  app.amino.queue._client.end = app.queue.close;
-  app.amino.process = app.queue.process;
+  app.amino.queue._client.end = app._queue.close;
+  app.amino.process = app.process;
 }
 
 // Load workers from a directory and register queue workers for them.
@@ -81,7 +76,7 @@ app.loadQueueWorkers = function (dir, cwd) {
       return;
     }
 
-    app.queue.process(task, handler);
+    app.process(task, handler);
   });
 };
 
