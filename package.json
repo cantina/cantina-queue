@@ -4,11 +4,14 @@
   "description": "Queue interface for cantina applications.",
   "main": "cantina-queue.js",
   "dependencies": {
-    "bull": "^3.3.1"
+    "bull": "^3.3.1",
+    "core-js": "^2.5.1",
+    "mock-require": "^2.0.2"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.1",
     "cantina": "cantina/cantina#3.x",
+    "cantina-amino": "cantina/cantina-amino#3.x",
     "cantina-redis": "cantina/cantina-redis#3.x",
     "eslint": "^4.9.0",
     "eslint-config-airbnb-es5": "^1.2.0",

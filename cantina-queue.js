@@ -1,6 +1,8 @@
 var app = require('cantina')
-  , Queue = require('bull');
+  , Queue = require('./bull');
 
+// Load cantina deps.
+require('cantina-amino');
 require('cantina-redis');
 
 // Default conf.
@@ -8,7 +10,6 @@ app.conf.add({
   queue: {
     name: 'main',
     options: {
-      skipVersionCheck: true,
       prefix: app.redisKey('queue')
     }
   }
@@ -17,56 +18,46 @@ app.conf.add({
 // Get conf.
 var conf = app.conf.get('queue');
 
-// Instantiate the API.
-app.queue = {
-  _clients: {},
-  _queue: null
-};
-
-// Shim 'String.startsWith'.
-global.String.prototype.startsWith = function (substr) {
-  return this.indexOf(substr) === 0;
-};
-
-// Create a new redis client (copy-pasted from cantina-redis).
-function createRedisClient () {
-  var opts = app.conf.get('redis') || {};
-
-  if (typeof conf === 'string') {
-    opts = { nodes: [opts] };
+// Pull redis options and use those. We are ignoring the fact that cantina-redis
+// supports multiple nodes with failover because ioredis, which bull uses,
+// does not support that.
+var redisConf = app.conf.get('redis');
+if (redisConf) {
+  if (typeof redisConf === 'string') {
+    redisConf = { nodes: [redisConf] };
   }
-  else if (Array.isArray(opts)) {
-    opts = { nodes: opts };
+  else if (Array.isArray(redisConf)) {
+    redisConf = { nodes: redisConf };
   }
-  else if (!opts.nodes) {
-    opts.nodes = ['127.0.0.1:6379'];
+  else if (!redisConf.nodes) {
+    redisConf.nodes = ['127.0.0.1:6379'];
   }
-  if (!opts.prefix) {
-    opts.prefix = 'cantina';
+  if (!conf.options.redis && redisConf.nodes) {
+    if (redisConf.nodes.length > 1) {
+      throw new Error('Cannot setup cantina-queue with multiple redis nodes configured');
+    }
+    conf.options.redis = redisConf.nodes[0];
   }
-
-  return app.redis.module.createClient(opts.nodes, opts);
 }
 
-// We need to provide our own redis client(s).
-conf.options.createClient = function (type) {
-  if (!app.queue._clients[type]) {
-    app.queue._clients[type] = createRedisClient();
-  }
-  return app.queue._clients[type];
+// Queue a new job (also the basis for the api).
+app.queue = function (name, payload) {
+  app.queue._queue.add(name, payload);
 };
 
 // Create the main queue.
 app.queue._queue = new Queue(conf.name, conf.options);
 
-// Queue a new job.
-app.queue.add = function (queue, payload) {
-  app.queue._queue(queue, payload);
+// Process a job.
+app.queue.process = function (name, cb) {
+  app.queue._queue.process(name, function (job, done) {
+    cb(job.data, done);
+  });
 };
 
-// Process a job.
-app.queue.process = function (queue, cb) {
-  app.queue._queue.process(queue, cb);
+// Close the main queue.
+app.queue.close = function () {
+  return app.queue._queue.close();
 };
 
 // Load workers from a directory and register queue workers for them.
@@ -74,21 +65,25 @@ app.loadQueueWorkers = function (dir, cwd) {
   var workers = app.load(dir, cwd);
   Object.keys(workers).forEach(function (name) {
     var worker = workers[name]
-      , queue = worker.queue || name
-      , handler = worker.worker || worker
-      , count = worker.count || 1
-      , i;
+      , task = worker.queue || name
+      , handler = worker.worker || worker;
 
     if (typeof handler !== 'function') {
       // The module is registering its own worker(s).
       return;
     }
 
-    for (i = 0; i < count; i++) {
-      app.queue.process(queue, handler);
-    }
+    app.queue.process(task, handler);
   });
 };
 
 // Load workers from app root.
 app.loadQueueWorkers('workers');
+
+// Side-compat with the amino-queue-based version.
+if (!app.amino.queue) {
+  app.amino.queue = app.queue;
+  app.amino.queue._client = {};
+  app.amino.queue._client.end = app.queue.close;
+  app.amino.process = app.queue.process;
+}
