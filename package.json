@@ -1,6 +1,6 @@
 {
   "name": "cantina-queue",
-  "version": "3.0.0-bull",
+  "version": "3.0.0",
   "description": "Queue interface for cantina applications.",
   "main": "cantina-queue.js",
   "dependencies": {
