@@ -1,15 +1,22 @@
 {
   "name": "cantina-queue",
-  "version": "3.0.0",
-  "description": "Amino queue interface for cantina applications.",
+  "version": "3.0.0-bull",
+  "description": "Queue interface for cantina applications.",
   "main": "cantina-queue.js",
   "dependencies": {
-    "amino-queue": "0.0.4"
+    "bull": "^3.3.1",
+    "core-js": "^2.5.1",
+    "mock-require": "^2.0.2"
   },
   "devDependencies": {
-    "mocha": "~1.12.0",
+    "babel-eslint": "^8.0.1",
     "cantina": "cantina/cantina#3.x",
-    "cantina-amino": "cantina/cantina-amino#3.x"
+    "cantina-amino": "cantina/cantina-amino#3.x",
+    "cantina-redis": "cantina/cantina-redis#3.x",
+    "eslint": "^4.9.0",
+    "eslint-config-airbnb-es5": "^1.2.0",
+    "eslint-plugin-react": "^7.4.0",
+    "mocha": "~1.12.0"
   },
   "scripts": {
     "test": "make test"
@@ -21,12 +28,11 @@
   "homepage": "https://github.com/cpsubrian/cantina-queue",
   "keywords": [
     "cantina",
-    "queue",
-    "amino"
+    "queue"
   ],
   "author": "Brian Link <cpsubrian@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cpsubrian/cantina-queue/issues"
+    "url": "https://github.com/cantina/cantina-queue/issues"
   }
 }
