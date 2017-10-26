@@ -6,6 +6,7 @@
   "dependencies": {
     "bull": "^3.3.1",
     "core-js": "^2.5.1",
+    "hydration": "~1.0.0",
     "mock-require": "^2.0.2"
   },
   "devDependencies": {

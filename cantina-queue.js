@@ -1,4 +1,5 @@
 var app = require('cantina')
+  , hydration = require('hydration')
   , Queue = require('./bull');
 
 // Load cantina deps.
@@ -45,13 +46,21 @@ app._queue = new Queue(conf.name, conf.options);
 
 // Queue a new job.
 app.queue = function (name, payload) {
-  app._queue.add(name, payload);
+  app._queue.add(name, {
+    payload: JSON.stringify(hydration.dehydrate(payload))
+  });
 };
 
 // Process a job.
 app.process = function (name, cb) {
   app._queue.process(name, function (job, done) {
-    cb(job.data, done);
+    if (job.data.payload) {
+      var payload = hydration.hydrate(JSON.parse(job.data.payload));
+      cb(payload, done);
+    }
+    else {
+      cb(job.data, done);
+    }
   });
 };
 
